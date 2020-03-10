@@ -1,6 +1,5 @@
 package tw.tonyyang.drama.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,8 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_drama.*
@@ -20,7 +18,7 @@ import tw.tonyyang.drama.viewmodel.DramaViewModel
 class DramaFragment : Fragment() {
 
     private val viewModel by lazy {
-        ViewModelProviders.of(this).get(DramaViewModel::class.java)
+        ViewModelProvider(this).get(DramaViewModel::class.java)
     }
 
     private val dramaAdapter by lazy {
@@ -68,9 +66,9 @@ class DramaFragment : Fragment() {
                 dramaAdapter.filter.filter(charString)
             }
         })
-        viewModel.dramaListLiveData.observe(this, Observer {
+        viewModel.dramaListLiveData.observe(viewLifecycleOwner) {
             dramaAdapter.update(it)
-        })
+        }
         viewModel.loadDramaList()
     }
 }

@@ -6,8 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.fragment_drama_detail.*
 import tw.tonyyang.drama.R
@@ -16,7 +15,7 @@ import tw.tonyyang.drama.viewmodel.DramaDetailViewModel
 class DramaDetailFragment : Fragment() {
 
     private val viewModel by lazy {
-        ViewModelProviders.of(this).get(DramaDetailViewModel::class.java)
+        ViewModelProvider(this).get(DramaDetailViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -29,7 +28,7 @@ class DramaDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.dramaLiveData.observe(this, Observer { drama ->
+        viewModel.dramaLiveData.observe(viewLifecycleOwner) { drama ->
             drama?.let {
                 it.thumb.let { url ->
                     Glide.with(activity as Context)
@@ -41,7 +40,7 @@ class DramaDetailFragment : Fragment() {
                 tv_drama_total_views.text = getString(R.string.drama_total_views_title, it.totalViews)
                 tv_drama_created_at.text = getString(R.string.drama_created_at_title, it.createdAt)
             }
-        })
+        }
 
         val idStr = activity?.intent?.data?.getQueryParameter("id")
         if (idStr?.isNotEmpty() == true) {
